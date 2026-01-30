@@ -4,21 +4,21 @@
 
 # 📂 Auto-Rename Scanner (Sequential)
 
-Aplikasi berbasis Python dengan antarmuka grafis (GUI) modern untuk memantau folder hasil scan secara otomatis dan memberikan penamaan file yang rapi menggunakan nomor urut.
+A modern Python-based GUI application designed to monitor scan destination folders in real-time and automatically rename files using a clean, sequential numbering system.
 
 
 
-## ✨ Fitur Utama
-* **Real-time Monitoring**: Mendeteksi file baru secara instan di folder tujuan scan.
-* **Sequential Naming**: Penamaan otomatis yang bersih (Contoh: `DOKUMEN_1.pdf`, `DOKUMEN_2.pdf`).
-* **Modern UI**: Antarmuka gelap (Dark Mode) menggunakan `CustomTkinter`.
-* **Safety Delay**: Memberikan jeda 1.5 detik agar file tidak terkunci saat diproses scanner.
-* **Format Terintegrasi**: Mendukung file `.pdf`, `.jpg`, `.jpeg`, dan `.png`.
+## ✨ Key Features
+* **Real-time Monitoring**: Instantly detects new files in the target folder using the `watchdog` library.
+* **Sequential Naming**: Replaces complex timestamps with simple numbers (e.g., `DOC_1.pdf`, `DOC_2.pdf`).
+* **Modern UI**: Dark-themed interface built with `CustomTkinter`.
+* **Safety Delay**: Includes a 1.5-second buffer to ensure files are fully written by the scanner before renaming.
+* **Multi-format Support**: Works with `.pdf`, `.jpg`, `.jpeg`, and `.png` files.
 
-## 🛠️ Prasyarat (Requirements)
-Jika Anda ingin menjalankan dari kode sumber:
+## 🛠️ Requirements
+To run from source, you need:
 * Python 3.x
-* Library: `customtkinter`, `watchdog`
+* Libraries: `customtkinter`, `watchdog`
 
 ```bash
 pip install customtkinter watchdog
