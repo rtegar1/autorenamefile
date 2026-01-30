@@ -22,3 +22,12 @@ To run from source, you need:
 
 ```bash
 pip install customtkinter watchdog
+
+## 🚀 How to Use
+1. **Run `main.py`**: Open the script in VS Code and press F5, or run `python main.py` in the terminal.
+2. **Select Folder**: Click the "Select Folder" button and choose the directory where your scanner saves files.
+3. **Set Prefix**: Enter your desired file prefix (e.g., `INVOICE` or `DOC`).
+4. **Start**: Click the **Start Monitoring** button. The app will now watch for new files and rename them instantly.
+
+## 📦 Download Executable (.exe)
+For Windows users who prefer not to install Python, you can download the standalone application from the [Releases](https://github.com/rtegar1/autorenamefile/releases) page.
