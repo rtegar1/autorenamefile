@@ -1,11 +1,8 @@
-# autorenamefile
-"Automated file renamer with modern UI. Monitors directories for new scans and renames them to custom patterns (e.g., Prefix_1, Prefix_2) instantly using Python Watchdog."
-
 
 # 📂 Auto-Rename Scanner (Sequential)
 
 A modern Python-based GUI application designed to monitor scan destination folders in real-time and automatically rename files using a clean, sequential numbering system.
-
+"Automated file renamer with modern UI. Monitors directories for new scans and renames them to custom patterns (e.g., Prefix_1, Prefix_2) instantly using Python Watchdog."
 
 
 ## ✨ Key Features
