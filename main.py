@@ -7,7 +7,7 @@ from tkinter import filedialog, messagebox
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-# --- LOGIKA INTI (BACKEND) ---
+# --- CORE LOGIC (BACKEND) ---
 class RenameHandler(FileSystemEventHandler):
     def __init__(self, prefix, app_instance):
         self.prefix = prefix
@@ -22,34 +22,36 @@ class RenameHandler(FileSystemEventHandler):
         file_name = os.path.basename(file_path)
         file_ext = os.path.splitext(file_name)[1].lower()
 
-        # Filter format file
+        # Filter file formats
         if file_ext in ['.pdf', '.jpg', '.jpeg', '.png']:
             # Jeda agar file tidak 'locked' oleh sistem scanner
-            time.sleep(1.5) 
-            
-            # --- LOGIKA NOMOR URUT (TANPA TIMESTAMP) ---
+            # Wait a moment so the file isn't 'locked' by the scanner
+            time.sleep(1.5)
+
+            # --- SEQUENTIAL NUMBERING LOGIC (NO TIMESTAMP) ---
             counter = 1
             while True:
                 # Menghasilkan nama: Prefix_1.pdf, Prefix_2.pdf, dst.
+                # Generate names: Prefix_1.pdf, Prefix_2.pdf, etc.
                 new_filename = f"{self.prefix}_{counter}{file_ext}"
                 new_path = os.path.join(file_dir, new_filename)
                 
                 # Cek jika nama file sudah ada, naikkan nomor urut
+                # Check if the filename already exists, increment counter if so
                 if not os.path.exists(new_path):
                     break
                 counter += 1
             
             try:
                 os.rename(file_path, new_path)
-                self.app.log_message(f"BERHASIL: {file_name} -> {new_filename}")
+                self.app.log_message(f"SUCCESS: {file_name} -> {new_filename}")
             except Exception as e:
                 self.app.log_message(f"ERROR: {str(e)}")
 
-# --- ANTARMUKA PENGGUNA (GUI) ---
+# --- USER INTERFACE (GUI) ---
 class ScanRenamerApp(ctk.CTk):
     def __init__(self):
         super().__init__()
-
         self.title("Auto Rename Scan (Sequential)")
         self.geometry("550x450")
         ctk.set_appearance_mode("dark")
@@ -62,40 +64,40 @@ class ScanRenamerApp(ctk.CTk):
         self.label_title = ctk.CTkLabel(self, text="Scanner File Watcher", font=("Arial", 22, "bold"))
         self.label_title.pack(pady=(20, 10))
 
-        # Pilih Folder
+        # Choose Folder
         self.frame_folder = ctk.CTkFrame(self)
         self.frame_folder.pack(pady=10, padx=20, fill="x")
 
-        self.folder_path = ctk.StringVar(value="Belum ada folder terpilih...")
+        self.folder_path = ctk.StringVar(value="No folder selected yet...")
         self.label_folder = ctk.CTkLabel(self.frame_folder, textvariable=self.folder_path, wraplength=400)
         self.label_folder.pack(pady=5)
 
-        self.btn_browse = ctk.CTkButton(self.frame_folder, text="Pilih Folder Scan", command=self.browse_folder)
+        self.btn_browse = ctk.CTkButton(self.frame_folder, text="Choose Scan Folder", command=self.browse_folder)
         self.btn_browse.pack(pady=10)
 
-        # Input Prefix
-        self.label_prefix = ctk.CTkLabel(self, text="Nama File Utama (Tanpa Angka):")
+        # Prefix Input
+        self.label_prefix = ctk.CTkLabel(self, text="Base File Name (Without Number):")
         self.label_prefix.pack()
-        self.entry_prefix = ctk.CTkEntry(self, placeholder_text="Contoh: LAPORAN_BULANAN", width=300)
+        self.entry_prefix = ctk.CTkEntry(self, placeholder_text="e.g., MONTHLY_REPORT", width=300)
         self.entry_prefix.pack(pady=(0, 20))
 
-        # Tombol Start/Stop
-        self.btn_action = ctk.CTkButton(self, text="Mulai Pantau Folder", 
+        # Start/Stop Button
+        self.btn_action = ctk.CTkButton(self, text="Start Watching Folder", 
                                         fg_color="#2ecc71", hover_color="#27ae60",
                                         font=("Arial", 14, "bold"),
                                         command=self.toggle_monitoring)
         self.btn_action.pack(pady=10)
 
-        # Log Aktivitas
+        # Activity Log
         self.log_box = ctk.CTkTextbox(self, width=500, height=120, font=("Consolas", 12))
         self.log_box.pack(pady=10, padx=20)
-        self.log_message("Sistem siap. Gunakan nomor urut otomatis.")
+        self.log_message("System ready. Using sequential numbering.")
 
     def browse_folder(self):
         path = filedialog.askdirectory()
         if path:
             self.folder_path.set(path)
-            self.log_message(f"Folder diatur ke: {path}")
+            self.log_message(f"Folder set to: {path}")
 
     def log_message(self, message):
         timestamp = datetime.now().strftime("%H:%M:%S")
@@ -107,8 +109,8 @@ class ScanRenamerApp(ctk.CTk):
             target_folder = self.folder_path.get()
             prefix = self.entry_prefix.get().strip()
 
-            if not os.path.exists(target_folder) or target_folder == "Belum ada folder terpilih...":
-                messagebox.showwarning("Peringatan", "Silakan pilih folder scan lebih dahulu!")
+            if not os.path.exists(target_folder) or target_folder == "No folder selected yet...":
+                messagebox.showwarning("Warning", "Please select a scan folder first!")
                 return
             
             prefix = prefix if prefix else "SCAN"
@@ -123,9 +125,9 @@ class ScanRenamerApp(ctk.CTk):
         self.observer.start()
         
         self.is_running = True
-        self.btn_action.configure(text="Berhenti Pantau", fg_color="#e74c3c", hover_color="#c0392b")
+        self.btn_action.configure(text="Stop Watching", fg_color="#e74c3c", hover_color="#c0392b")
         self.entry_prefix.configure(state="disabled")
-        self.log_message(f"MEMANTAU: {folder} (Prefix: {prefix})")
+        self.log_message(f"WATCHING: {folder} (Prefix: {prefix})")
 
     def stop_monitoring(self):
         if self.observer:
@@ -133,9 +135,9 @@ class ScanRenamerApp(ctk.CTk):
             self.observer.join()
         
         self.is_running = False
-        self.btn_action.configure(text="Mulai Pantau Folder", fg_color="#2ecc71", hover_color="#27ae60")
+        self.btn_action.configure(text="Start Watching Folder", fg_color="#2ecc71", hover_color="#27ae60")
         self.entry_prefix.configure(state="normal")
-        self.log_message("Monitoring dihentikan.")
+        self.log_message("Monitoring stopped.")
 
 if __name__ == "__main__":
     app = ScanRenamerApp()
